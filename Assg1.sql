@@ -277,3 +277,147 @@ order by lt.table_name;
 
 commit;
 
+
+
+
+
+
+
+
+
+alter table faculty154
+drop constraint notnull_wud;
+
+insert all
+into faculty154 values(60000, 'Rahul', 'E101', 90001, null, 'E101')
+into faculty154 values(50000, 'Priya', 'E102', 90002, null, 'E101')
+into faculty154 values(70000, 'Amit',  'E103', 90003, null, 'E101')
+into faculty154 values(55000, 'Neha',  'E104', 90004, null, 'E104')
+into faculty154 values(75000, 'Ravi',  'E105', 90005, null, 'E104')
+select * from dual;
+
+insert all
+into department154 values('Dep1', 2000, 'HITK ICT',  'CSE',  'E101')
+into department154 values('Dep2', 2001, 'HITK CB',   'ECE',  'E102')
+into department154 values('Dep3', 2002, 'HITK CME',  'AIML', 'E103')
+into department154 values('Dep4', 2003, 'HITK ICTB', 'IT',   'E104')
+into department154 values('Dep5', 2004, 'HITK CMEB', 'BT',   'E105')
+select * from dual;
+
+update faculty154 set wud = 'Dep1' where empid in ('E101','E102');
+update faculty154 set wud = 'Dep2' where empid in ('E103','E104');
+update faculty154 set wud = 'Dep3' where empid = 'E105';
+
+alter table faculty154
+modify wud varchar(10) constraint notnull_wud not null;
+
+insert all
+into course154 values('C01', 'BTECH',   'CSE',  'Dep1')
+into course154 values('C02', 'MTECH',   'ECE',  'Dep2')
+into course154 values('C03', 'DIPLOMA', 'AIML', 'Dep3')
+into course154 values('C04', 'BSC',    'IT',   'Dep4')
+into course154 values('C05', 'MSC',    'BT',   'Dep5')
+select * from dual;
+
+insert all
+into subject154 values('P01', 'DSA', 4)
+into subject154 values('P02', 'DAA', 3)
+into subject154 values('P03', 'DBMS', 4)
+into subject154 values('P04', 'OS', 4)
+into subject154 values('P05', 'AI', 4)
+select * from dual;
+
+insert all
+into section154 values(2024, 'S1', 'C01')
+into section154 values(2024, 'S2', 'C02')
+into section154 values(2025, 'S3', 'C03')
+into section154 values(2025, 'S4', 'C04')
+into section154 values(2026, 'S5', 'C05')
+select * from dual;
+
+insert all
+into student154 values(
+    to_date('15-01-2003','DD-MM-YYYY'), 9800000001, 'rahul@gmail.com',
+    101, 'Rahul', 700001, 101, 'Kolkata', 'S1', 'C01', 2021
+)
+into student154 values(
+    to_date('20-03-2003','DD-MM-YYYY'), 9800000002, 'priya@gmail.com',
+    102, 'Priya', 700002, 102, 'Kolkata', 'S2', 'C02', 2021
+)
+into student154 values(
+    to_date('10-05-2004','DD-MM-YYYY'), 9800000003, 'amit@gmail.com',
+    103, 'Amit', 700003, 103, 'Durgapur', 'S3', 'C03', 2022
+)
+into student154 values(
+    to_date('25-07-2004','DD-MM-YYYY'), 9800000004, 'neha@gmail.com',
+    104, 'Neha', 700004, 104, 'Siliguri', 'S4', 'C04', 2022
+)
+into student154 values(
+    to_date('12-09-2005','DD-MM-YYYY'), 9800000005, 'ravi@gmail.com',
+    105, 'Ravi', 700005, 105, 'Howrah', 'S5', 'C05', 2023
+)
+select * from dual;
+
+
+insert all
+into contains154 values('C01', 'P01', 1)
+into contains154 values('C02', 'P02', 1)
+into contains154 values('C03', 'P03', 2)
+into contains154 values('C04', 'P04', 2)
+into contains154 values('C05', 'P05', 3)
+select * from dual;
+
+
+
+insert all
+into exam154 values(101, 'P01', 101, 85)
+into exam154 values(102, 'P02', 101, 78)
+into exam154 values(103, 'P03', 102, 91)
+into exam154 values(104, 'P04', 102, 88)
+into exam154 values(105, 'P05', 103, 95)
+select * from dual;
+
+
+insert all
+into teaches154 values('E101', 'P01', 101)
+into teaches154 values('E102', 'P02', 101)
+into teaches154 values('E103', 'P03', 102)
+into teaches154 values('E104', 'P04', 102)
+into teaches154 values('E105', 'P05', 103)
+select * from dual;
+
+
+insert all
+into instructed154 values('S1', 'E101', 101)
+into instructed154 values('S2', 'E102', 101)
+into instructed154 values('S3', 'E103', 102)
+into instructed154 values('S4', 'E104', 102)
+into instructed154 values('S5', 'E105', 103)
+select * from dual;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
