@@ -1,0 +1,423 @@
+create table student154(
+ dob date constraint notnull_dob not null,
+ mobile number(10) constraint notnull_mob2 not null,
+ email varchar(50) constraint notnull_email2 not null,
+ roll number(10) constraint pkey_roll_stud primary key,
+ sname varchar(50) constraint notnull_sname not null,
+ pincode number(6) constraint notnull_pin not null,
+ houseno number(3) constraint notnull_hno not null,
+ city varchar(50) constraint notnull_city not null,
+ constraint ckey_sname_address unique(sname,pincode,houseno,city),
+ constraint ckey_email_stud unique(email),
+ constraint ckey_mob_stud unique(mobile)
+);
+
+create table section154(
+ batch number(4) constraint notnull_batch not null,
+ sec_id varchar(2) constraint pkey_sec primary key
+);
+
+create table faculty154(
+ salary number(10,2) constraint notnull_sal not null,
+ fname varchar(50) constraint notnull_fname not null,
+ empid varchar(20) constraint pkey_empid primary key,
+ emob number(10) constraint notnull_emob not null,
+ constraint ckey_emob unique(emob)
+);
+
+insert into faculty154 values(
+ 60000, 'F1', 'E101', 90001);
+
+insert into faculty154 values(
+ 50000, 'F2', 'E102', 90002);
+
+insert into faculty154 values(
+ 70000, 'F3', 'E103', 90003);
+
+insert into faculty154 values(
+ 55000, 'F4', 'E104', 90004);
+
+insert into faculty154 values(
+ 75000, 'F5', 'E105', 90005);
+
+select * from tab;
+
+create table department154(
+ depid varchar(10) constraint pkey_did primary key,
+ yos number(4),
+ offloc varchar(20) constraint notnull_offloc not null,
+ dname varchar(20) constraint notnull_dname not null,
+ hod varchar(20) constraint notnull_hod not null,
+ constraint ckey_hod unique(hod),
+ constraint fkey_hod foreign key(hod) references faculty154(empid)
+);
+
+alter table department154
+add constraint ckey_dname unique(dname);
+
+
+
+insert into department154 values(
+ 'Dep1', 2000, 'HITK ICT', 'CSE', 'E101');
+
+insert into department154 values(
+ 'Dep2', 2001, 'HITK CB', 'ECE', 'E102');
+
+insert into department154 values(
+ 'Dep3', 2002, 'HITK CME', 'AIML', 'E103');
+
+insert into department154 values(
+ 'Dep4', 2003, 'HITK ICTB', 'IT', 'E104');
+
+insert into department154 values(
+ 'Dep5', 2004, 'HITK CMEB', 'BT', 'E105');
+
+alter table faculty154
+add wud varchar(10);
+
+alter table faculty154
+add supervisedby_emp varchar(20);
+
+update faculty154 set wud = 'Dep1' where empid in('E101', 'E102');
+update faculty154 set wud = 'Dep2' where empid in('E103', 'E104');
+update faculty154 set wud = 'Dep3' where empid in('E105');
+
+update faculty154 set supervisedby_emp='E101' where empid IN('E101','E102','E103');
+update faculty154 set supervisedby_emp='E104' where empid IN('E104','E105');
+
+alter table faculty154
+add constraint cons_fkey_wud foreign key(wud) references department154(depid);
+
+alter table faculty154
+modify wud varchar(10) constraint notnull_wud not null;
+
+alter table faculty154
+add constraint cons_fkey_sup foreign key(supervisedby_emp) references faculty154(empid);
+
+alter table student154
+add belongsto_sec varchar(2) constraint cons_nnull_btsec not null;
+
+alter table student154
+add constraint cons_fkey_btsec foreign key(belongsto_sec) references section154(sec_id);
+
+create table course154(
+ cid varchar(20) constraint pkey_cid primary key,
+ cname varchar(50) constraint notnull_cname not null,
+ discipline varchar(50) constraint notnull_discipline not null,
+ offeredby_dep varchar(10) constraint notnull_offdep not null,
+ constraint cons_fkey_offdep foreign key(offeredby_dep) references department154(depid)
+);
+
+alter table course154
+add constraint c_key_cname unique(cname);
+
+alter table course154
+add constraint c_key_discipline unique(discipline);
+
+create table subject154(
+ papercode varchar(20) constraint pkey_pcode primary key,
+ pname varchar(20) constraint notnull_pname not null,
+ credit number(2) constraint notnull_cred not null
+);
+
+create table contains154(
+ ccid varchar(20) constraint notnull_ccid not null,
+ cpapcode varchar(20) constraint notnull_cpap not null,
+ semester number(1) constraint notnull_sem not null,
+ constraint pkey_contains primary key(ccid, cpapcode, semester),
+ constraint fkey_ccid foreign key(ccid) references course154(cid),
+ constraint fkey_cpap foreign key(cpapcode) references subject154(papercode)
+);
+
+alter table contains154
+drop constraint notnull_ccid;
+
+alter table contains154
+drop constraint notnull_cpap;
+
+alter table contains154
+drop constraint notnull_sem;
+
+create table exam154(
+ perfby_roll number(10) constraint notnull_eroll not null,
+ epapcode varchar(20) constraint notnull_epap not null,
+ esession number(3) constraint notnull_ses not null,
+ marks number(3) constraint notnull_marks not null,
+ constraint pkey_exam primary key(perfby_roll, epapcode, esession),
+ constraint fkey_perfbyroll foreign key(perfby_roll) references student154(roll)
+);
+
+alter table exam154
+drop constraint notnull_eroll;
+
+alter table exam154
+drop constraint notnull_epap;
+
+alter table exam154
+drop constraint notnull_ses;
+
+alter table exam154
+add constraint fkey_papercode foreign key(epapcode) references subject154(papercode);
+
+create table teaches154(
+ tempid varchar(20) constraint notnull_tid not null,
+ tpapcode varchar(10) constraint notnull_tpap not null,
+ tsession number(3) constraint notnull_tses not null,
+ constraint pkey_teaches primary key(tempid, tpapcode, tsession),
+ constraint fkey_tid foreign key(tempid) references faculty154(empid),
+ constraint fkey_tpap foreign key(tpapcode) references subject154(papercode)
+);
+
+alter table teaches154
+drop constraint notnull_tid;
+
+alter table teaches154
+drop constraint notnull_tpap;
+
+alter table teaches154
+drop constraint notnull_tses;
+
+alter table student154
+add enroll_cid varchar(10) constraint notnull_ecid not null;
+
+alter table student154
+add constraint fkey_encid foreign key(enroll_cid) references course154(cid);
+
+alter table student154
+add yoa number(4) constraint notnull_yoa not null;
+
+alter table section154
+add studying_cid varchar(10) constraint notnull_scid not null;
+
+alter table section154
+add constraint fkey_scid foreign key(studying_cid) references course154(cid);
+
+create table instructed154(
+ inssecid varchar(2) constraint notnull_isecid not null,
+ insempid varchar(20) constraint notnull_iempid not null,
+ isession number(3) constraint notnull_ises not null,
+ constraint pkey_ins primary key(inssecid, insempid, isession),
+ constraint fkey_isecid foreign key(inssecid) references section154(sec_id),
+ constraint fkey_iempid foreign key(insempid) references faculty154(empid)
+);
+
+alter table instructed154
+drop constraint notnull_isecid;
+
+alter table instructed154
+drop constraint notnull_iempid;
+
+alter table instructed154
+drop constraint notnull_ises;
+
+desc course154;
+
+insert into course154
+values('C01','BTECH','CSE','Dep1');
+
+insert into course154
+values('C02','MTECH','ECE','Dep2');
+
+insert into course154
+values('C03','Diploma','AIML','Dep3');
+
+insert into course154
+values('C04','BSC','IT','Dep4');
+
+insert into course154
+values('C05','MSC','BT','Dep5');
+
+delete from course154;
+
+select * from tab;
+
+desc subject154;
+
+insert all
+into subject154 values('P01','DSA',4)
+into subject154 values('P02','DAA',3)
+into subject154 values('P03','ECE',4)
+into subject154 values('P04','DS',4)
+into subject154 values('P05','AI',4)
+select * from dual;
+
+select * from student154;
+select * from section154;
+select * from faculty154;
+select * from department154;
+select * from course154;
+select * from subject154;
+select * from contains154;
+select * from exam154;
+select * from teaches154;
+select * from instructed154;
+
+desc student154;
+desc section154;
+desc faculty154;
+desc department154;
+desc course154;
+desc subject154;
+desc contains154;
+desc exam154;
+desc teaches154;
+desc instructed154;
+
+select * from tab;
+
+
+
+select lt.table_name, rt.column_name, lt.constraint_name,
+       lt.constraint_type, lt.search_condition
+from user_constraints lt, user_cons_columns rt
+where lt.constraint_name = rt.constraint_name
+and to_char(last_change,'DD-MON-YYYY') >= '26-AUG-2026'
+order by lt.table_name;
+
+
+commit;
+
+
+
+
+
+
+
+
+
+alter table faculty154
+drop constraint notnull_wud;
+
+insert all
+into faculty154 values(60000, 'Rahul', 'E101', 90001, null, 'E101')
+into faculty154 values(50000, 'Priya', 'E102', 90002, null, 'E101')
+into faculty154 values(70000, 'Amit',  'E103', 90003, null, 'E101')
+into faculty154 values(55000, 'Neha',  'E104', 90004, null, 'E104')
+into faculty154 values(75000, 'Ravi',  'E105', 90005, null, 'E104')
+select * from dual;
+
+insert all
+into department154 values('Dep1', 2000, 'HITK ICT',  'CSE',  'E101')
+into department154 values('Dep2', 2001, 'HITK CB',   'ECE',  'E102')
+into department154 values('Dep3', 2002, 'HITK CME',  'AIML', 'E103')
+into department154 values('Dep4', 2003, 'HITK ICTB', 'IT',   'E104')
+into department154 values('Dep5', 2004, 'HITK CMEB', 'BT',   'E105')
+select * from dual;
+
+update faculty154 set wud = 'Dep1' where empid in ('E101','E102');
+update faculty154 set wud = 'Dep2' where empid in ('E103','E104');
+update faculty154 set wud = 'Dep3' where empid = 'E105';
+
+alter table faculty154
+modify wud varchar(10) constraint notnull_wud not null;
+
+insert all
+into course154 values('C01', 'BTECH',   'CSE',  'Dep1')
+into course154 values('C02', 'MTECH',   'ECE',  'Dep2')
+into course154 values('C03', 'DIPLOMA', 'AIML', 'Dep3')
+into course154 values('C04', 'BSC',    'IT',   'Dep4')
+into course154 values('C05', 'MSC',    'BT',   'Dep5')
+select * from dual;
+
+insert all
+into subject154 values('P01', 'DSA', 4)
+into subject154 values('P02', 'DAA', 3)
+into subject154 values('P03', 'DBMS', 4)
+into subject154 values('P04', 'OS', 4)
+into subject154 values('P05', 'AI', 4)
+select * from dual;
+
+insert all
+into section154 values(2024, 'S1', 'C01')
+into section154 values(2024, 'S2', 'C02')
+into section154 values(2025, 'S3', 'C03')
+into section154 values(2025, 'S4', 'C04')
+into section154 values(2026, 'S5', 'C05')
+select * from dual;
+
+insert all
+into student154 values(
+    to_date('15-01-2003','DD-MM-YYYY'), 9800000001, 'rahul@gmail.com',
+    101, 'Rahul', 700001, 101, 'Kolkata', 'S1', 'C01', 2021
+)
+into student154 values(
+    to_date('20-03-2003','DD-MM-YYYY'), 9800000002, 'priya@gmail.com',
+    102, 'Priya', 700002, 102, 'Kolkata', 'S2', 'C02', 2021
+)
+into student154 values(
+    to_date('10-05-2004','DD-MM-YYYY'), 9800000003, 'amit@gmail.com',
+    103, 'Amit', 700003, 103, 'Durgapur', 'S3', 'C03', 2022
+)
+into student154 values(
+    to_date('25-07-2004','DD-MM-YYYY'), 9800000004, 'neha@gmail.com',
+    104, 'Neha', 700004, 104, 'Siliguri', 'S4', 'C04', 2022
+)
+into student154 values(
+    to_date('12-09-2005','DD-MM-YYYY'), 9800000005, 'ravi@gmail.com',
+    105, 'Ravi', 700005, 105, 'Howrah', 'S5', 'C05', 2023
+)
+select * from dual;
+
+
+insert all
+into contains154 values('C01', 'P01', 1)
+into contains154 values('C02', 'P02', 1)
+into contains154 values('C03', 'P03', 2)
+into contains154 values('C04', 'P04', 2)
+into contains154 values('C05', 'P05', 3)
+select * from dual;
+
+
+
+insert all
+into exam154 values(101, 'P01', 101, 85)
+into exam154 values(102, 'P02', 101, 78)
+into exam154 values(103, 'P03', 102, 91)
+into exam154 values(104, 'P04', 102, 88)
+into exam154 values(105, 'P05', 103, 95)
+select * from dual;
+
+
+insert all
+into teaches154 values('E101', 'P01', 101)
+into teaches154 values('E102', 'P02', 101)
+into teaches154 values('E103', 'P03', 102)
+into teaches154 values('E104', 'P04', 102)
+into teaches154 values('E105', 'P05', 103)
+select * from dual;
+
+
+insert all
+into instructed154 values('S1', 'E101', 101)
+into instructed154 values('S2', 'E102', 101)
+into instructed154 values('S3', 'E103', 102)
+into instructed154 values('S4', 'E104', 102)
+into instructed154 values('S5', 'E105', 103)
+select * from dual;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
