@@ -1,0 +1,120 @@
+DAY 3: ASSIGNMENT OF SQL - JOINS AND SINGLE ROW FUNCTION
+Marks: 35
+
+1. Faculty employee and supervisor — joining month August to October
+
+SELECT
+    e.fname AS employee_name,
+    e.fid AS employee_id,
+    e.salary AS employee_salary,
+    s.fname AS supervisor_name,
+    s.fid AS supervisor_id,
+    s.salary AS supervisor_salary
+FROM faculty154 e
+JOIN faculty154 s
+    ON e.supervisor_id = s.fid
+WHERE EXTRACT(MONTH FROM e.date_of_joining) BETWEEN 8 AND 10
+  AND EXTRACT(MONTH FROM s.date_of_joining) BETWEEN 8 AND 10;
+
+
+2. Faculty employee older than supervisor
+
+SELECT
+    e.fname AS employee_name,
+    e.fid AS employee_id,
+    e.salary AS employee_salary,
+    s.fname AS supervisor_name,
+    s.fid AS supervisor_id,
+    s.salary AS supervisor_salary
+FROM faculty154 e
+JOIN faculty154 s
+    ON e.supervisor_id = s.fid
+WHERE e.date_of_birth < s.date_of_birth;
+
+
+3. Passenger whose name contains A/a only 1–2 times
+
+SELECT
+    p.name,
+    p.adhaar,
+    p.mobile,
+    t.pnr,
+    t.cost
+FROM passenger154 p
+JOIN ticket154 t
+    ON p.adhaar = t.adhaar
+WHERE LENGTH(p.name)
+      - LENGTH(REPLACE(LOWER(p.name), 'a', '')) BETWEEN 1 AND 2;
+
+
+4. Passengers, ticket, seat details + idle passengers + unsold seats
+
+SELECT
+    p.name,
+    p.adhaar,
+    p.mobile,
+    t.pnr,
+    t.cost,
+    s.seat_no,
+    s.trip_id
+FROM passenger154 p
+FULL OUTER JOIN ticket154 t
+    ON p.adhaar = t.adhaar
+FULL OUTER JOIN seat154 s
+    ON t.seat_no = s.seat_no
+   AND t.trip_id = s.trip_id;
+
+
+5. Supervisor faculty and their corresponding supervisor
+
+SELECT
+    s.fid AS supervisor_id,
+    s.fname AS supervisor_name,
+    s.salary AS supervisor_salary,
+    ss.fid AS senior_supervisor_id,
+    ss.fname AS senior_supervisor_name,
+    ss.salary AS senior_supervisor_salary
+FROM faculty154 s
+LEFT JOIN faculty154 ss
+    ON s.supervisor_id = ss.fid
+WHERE EXISTS (
+    SELECT 1
+    FROM faculty154 e
+    WHERE e.supervisor_id = s.fid
+);
+
+
+6. Passenger departure and return within 24 hours
+
+SELECT
+    p.name,
+    p.adhaar,
+    p.mobile,
+    d.departure_date,
+    r.return_date
+FROM passenger154 p
+JOIN ticket154 d
+    ON p.adhaar = d.adhaar
+JOIN ticket154 r
+    ON p.adhaar = r.adhaar
+WHERE d.source = r.destination
+  AND d.destination = r.source
+  AND r.return_date - d.departure_date <= 1;
+
+
+7. Trips with no ticket sold and less than 24 hours remaining
+
+SELECT
+    tr.trip_id,
+    tr.veh_reg_no,
+    tr.date_of_trip
+FROM trip154 tr
+LEFT JOIN ticket154 t
+    ON tr.trip_id = t.trip_id
+WHERE t.pnr IS NULL
+  AND tr.date_of_trip > SYSDATE
+  AND tr.date_of_trip - SYSDATE < 1;
+
+
+NOTE:
+Q6 and some column names are based on the logical column names used in the answer because the assignment PDF does not provide the complete table schema. Replace them with the exact column names from your database if they are different.
